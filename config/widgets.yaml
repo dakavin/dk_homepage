@@ -1,0 +1,32 @@
+# 问候语组件，显示在页面顶部
+- greeting:
+    # 字号：xl = 大号
+    text_size: xl
+    # 问候语内容
+    text: Dakkk's VPS Dashboard
+# 日期时间组件
+- datetime:
+    text_size: xl
+    format:
+      # 时间显示格式：short = "14:30"
+      timeStyle: short
+      # 日期显示格式：long = "2026年5月17日"
+      dateStyle: long
+      # 24小时制
+      hourCycle: h23
+# 系统资源组件（显示 CPU/内存/磁盘使用率）
+- resources:
+    # 显示 CPU 使用率
+    cpu: true
+    # 显示内存使用率
+    memory: true
+    # 显示哪个分区的磁盘使用率
+    disk: /
+    # 组件标签名
+    label: VPS
+# 搜索框组件
+- search:
+    # 搜索引擎：duckduckgo（隐私友好）
+    provider: duckduckgo
+    # 搜索结果在新标签页打开
+    target: _blank

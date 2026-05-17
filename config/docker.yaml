@@ -1,0 +1,5 @@
+# Docker 集成配置：让 homepage 能读取 Docker 容器状态
+# "my-docker" 是连接名称，可以随意起
+my-docker:
+  # 通过 docker.sock 文件与 Docker 通信（需要在 compose 里挂载这个文件）
+  socket: /var/run/docker.sock

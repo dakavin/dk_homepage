@@ -1,0 +1,54 @@
+# 第一个分组：工作应用
+- 工作应用:
+    # 每个 "-" 开头的是一张服务卡片
+    - ThriveX 博客:
+        # 点击卡片跳转的地址
+        href: https://blog.dakkk.top
+        # 卡片下方的描述文字
+        description: NextJS 前台，对外展示
+        # 卡片图标（nextjs.svg 是 homepage 内置图标）
+        icon: nextjs.svg
+        # 站点监控：homepage 会定时 ping 这个地址，显示在线/离线状态
+        siteMonitor: https://blog.dakkk.top
+    - ThriveX 管理台:
+        href: https://admin.dakkk.top
+        description: 后台写文章 / 配置站点
+        # si- 开头表示用 Simple Icons 图标库
+        icon: si-antdesign
+        siteMonitor: https://admin.dakkk.top
+    - 文件门户:
+        href: https://files.dakkk.top
+        description: OpenList / AList
+        # 自定义图标：把 alist.png 放到项目的 public/icons/ 目录下
+        icon: alist.png
+        siteMonitor: https://files.dakkk.top
+# 第二个分组：运维工具
+- 运维工具:
+    - AI 聚合:
+        href: https://ai.dakkk.top
+        description: new-api 入口
+        icon: openai.svg
+    - 密码库:
+        href: https://vault.dakkk.top
+        description: Vaultwarden
+        icon: bitwarden.svg
+        siteMonitor: https://vault.dakkk.top
+    - 额度监控:
+        href: https://quota.dakkk.top
+        description: Claude Code 额度
+        # mdi- 开头表示用 Material Design Icons 图标库
+        icon: mdi-chart-line
+# 第三个分组：可选服务
+- 可选服务:
+    - 邮件管理:
+        href: https://mail.dakkk.top
+        description: Stalwart（可选）
+        icon: mdi-email-outline
+    - Hermes Agent:
+        # 没有 href 就不会显示为可点击链接
+        description: Telegram/CLI，不走浏览器
+        icon: mdi-robot
+    - vps监控:
+        href: https://backup.dakkk.top
+        description: backup
+        icon: mdi-cloud-upload

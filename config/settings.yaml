@@ -1,0 +1,38 @@
+# 页面标题，显示在浏览器标签页上
+title: Dakkk's Home
+# 网站图标地址
+favicon: https://dakkk.top/favicon.ico
+# 主题：dark = 深色模式
+theme: dark
+# 主色调：slate = 蓝灰色
+color: slate
+# 界面语言
+language: zh-CN
+# 背景设置
+background:
+  # 背景图片URL，留空则用纯色背景
+  image: ""
+  # 背景模糊程度：sm = 轻微模糊
+  blur: sm
+  # 背景透明度（百分比）
+  opacity: 90
+# 布局设置：定义每个分组的显示方式
+layout:
+  # "工作应用"这个分组的布局
+  工作应用:
+    # row = 横向排列
+    style: row
+    # 一行显示几张卡片
+    columns: 3
+  运维工具:
+    style: row
+    columns: 3
+  可选服务:
+    style: row
+    columns: 3
+# 顶栏风格：clean = 简洁
+headerStyle: clean
+# 状态指示器样式：dot = 小圆点（绿=在线，红=离线）
+statusStyle: dot
+# 隐藏 homepage 版本号
+hideVersion: true
