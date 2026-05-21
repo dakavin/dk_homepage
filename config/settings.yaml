@@ -1,38 +1,203 @@
-# 页面标题，显示在浏览器标签页上
-title: Dakkk's Home
-# 网站图标地址
-favicon: https://dakkk.top/favicon.ico
-# 主题：dark = 深色模式
-theme: dark
-# 主色调：slate = 蓝灰色
-color: slate
-# 界面语言
+# =====================================================================
+# Homepage 主配置 / Homepage main configuration
+# 文档: https://gethomepage.dev/configs/settings/
+# 图标库: https://selfh.st/icons/  /  https://dashboardicons.com
+# =====================================================================
+
+# 浏览器标签页标题
+title: DK 主页
+description: Dakkk 个人 VPS 导航 - 自建服务、AI 工具、常用站点一站式入口
+
+# 网站图标 (favicon)，使用项目内置的本地资源
+favicon: /favicon.ico
+
+# 默认界面语言
+# zh-CN | en | zh-Hant ...
+# 注意: 通过页面右下角的 "Lang" 按钮也可以前端切换并存到 localStorage
 language: zh-CN
-# 背景设置
-background:
-  # 背景图片URL，留空则用纯色背景
-  image: ""
-  # 背景模糊程度：sm = 轻微模糊
-  blur: sm
-  # 背景透明度（百分比）
-  opacity: 90
-# 布局设置：定义每个分组的显示方式
-layout:
-  # "工作应用"这个分组的布局
-  工作应用:
-    # row = 横向排列
-    style: row
-    # 一行显示几张卡片
-    columns: 3
-  运维工具:
-    style: row
-    columns: 3
-  可选服务:
-    style: row
-    columns: 3
-# 顶栏风格：clean = 简洁
+
+# 顶栏样式: clean | underlined | boxed | boxedWidgets
 headerStyle: clean
-# 状态指示器样式：dot = 小圆点（绿=在线，红=离线）
+
+# 状态指示器样式: basic | dot
 statusStyle: dot
-# 隐藏 homepage 版本号
+
+# 隐藏版本号
 hideVersion: true
+
+# 隐藏小组件错误
+hideErrors: false
+
+# 全宽布局
+fullWidth: false
+
+# 图标主题: theme = 跟随主题色; gradient = 渐变
+iconStyle: theme
+
+# 卡片毛玻璃模糊度: ""(无) / xs / sm / md / lg / xl / 2xl / 3xl
+cardBlur: sm
+
+# !!! 主题/配色注释掉，让用户在页面右下角自由切换 !!!
+# theme: dark         # 注释掉以启用 ThemeToggle 按钮
+# color: slate        # 注释掉以启用 ColorToggle 按钮
+
+# =====================================================================
+# 背景图配置 (custom.js 会自动在多张本地壁纸间轮换)
+# =====================================================================
+background:
+  image: /images/wallpapers/background1.webp
+  saturate: 100   # 0~200
+  brightness: 88  # 0~150
+  opacity: 65     # 0-100, 越低背景越显眼
+
+# =====================================================================
+# 快速启动 (按下任意键唤出搜索条)
+# =====================================================================
+quicklaunch:
+  searchDescriptions: true        # 同时搜索描述文字
+  hideInternetSearch: false       # 显示外网搜索结果
+  showSearchSuggestions: true     # 显示搜索建议
+  hideVisitURL: false             # 显示直接访问 URL 选项
+  provider: [bing, baidu, google, duckduckgo]
+
+# =====================================================================
+# 模块高亮级别 (服务/小部件健康度颜色)
+# =====================================================================
+blockHighlights:
+  levels:
+    good: "bg-emerald-500/40 text-emerald-950 dark:bg-emerald-900/60 dark:text-emerald-300"
+    warn: "bg-amber-300/30 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200"
+    danger: "bg-rose-700/45 text-rose-100 dark:bg-rose-950/70 dark:text-rose-400"
+
+# =====================================================================
+# 布局: 每个分组对应到一个 Tab
+# tab 名称将出现在顶部 tab 栏
+# =====================================================================
+layout:
+  # ============== Tab: HOME =========================================
+  常用:
+    tab: HOME
+    style: row
+    columns: 4
+    header: true
+
+  工作应用:
+    tab: HOME
+    style: row
+    columns: 3
+    header: true
+
+  运维工具:
+    tab: HOME
+    style: row
+    columns: 3
+    header: true
+
+  可选服务:
+    tab: HOME
+    style: row
+    columns: 3
+    header: true
+
+  我的服务:
+    tab: HOME
+    style: row
+    columns: 3
+    iconsOnly: false
+    header: true
+
+  云服务:
+    tab: HOME
+    style: row
+    columns: 3
+    iconsOnly: false
+    header: true
+
+  文档:
+    tab: HOME
+    style: row
+    columns: 3
+    iconsOnly: false
+    header: true
+
+  # ============== Tab: AI ===========================================
+  语言模型:
+    tab: AI
+    style: row
+    columns: 4
+    iconsOnly: false
+    header: true
+
+  AI 工作流:
+    tab: AI
+    style: row
+    columns: 4
+    header: true
+
+  # ============== Tab: 开发 / Dev ==================================
+  开发平台:
+    tab: 开发
+    style: row
+    columns: 4
+    header: true
+
+  文档参考:
+    tab: 开发
+    style: row
+    columns: 4
+    header: true
+
+  开发书签:
+    tab: 开发
+    style: row
+    columns: 4
+    iconsOnly: false
+    header: true
+
+  # ============== Tab: 工具 / Tools ================================
+  图标资源:
+    tab: 工具
+    style: row
+    columns: 4
+    header: true
+
+  实用工具:
+    tab: 工具
+    style: row
+    columns: 4
+    header: true
+
+  # ============== Tab: 娱乐 / Fun ==================================
+  社交媒体:
+    tab: 娱乐
+    style: row
+    columns: 4
+    header: true
+
+  影音娱乐:
+    tab: 娱乐
+    style: row
+    columns: 4
+    header: true
+
+  社交书签:
+    tab: 娱乐
+    style: row
+    columns: 4
+    iconsOnly: false
+    header: true
+
+  娱乐书签:
+    tab: 娱乐
+    style: row
+    columns: 4
+    iconsOnly: false
+    header: true
+
+# =====================================================================
+# Provider API Keys (天气/汇率等)
+# 不要把真实 key 提交到公共仓库 - 用环境变量或 docker secret
+# =====================================================================
+providers:
+  # openweathermap: <在此填写 key>
+  # weatherapi: <在此填写 key>

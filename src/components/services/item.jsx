@@ -2,6 +2,7 @@ import classNames from "classnames";
 import ResolvedIcon from "components/resolvedicon";
 import { useContext, useState } from "react";
 import { SettingsContext } from "utils/contexts/settings";
+import { useDkTranslate } from "utils/i18n/dk-translate";
 import Docker from "widgets/docker/component";
 import Kubernetes from "widgets/kubernetes/component";
 import ProxmoxVM from "widgets/proxmoxvm/component";
@@ -16,6 +17,7 @@ import Widget from "./widget";
 export default function Item({ service, groupName, useEqualHeights }) {
   const hasLink = service.href && service.href !== "#";
   const { settings } = useContext(SettingsContext);
+  const tr = useDkTranslate();
   const showStats = service.showStats === false ? false : settings.showStats;
   const statusStyle = service.statusStyle !== undefined ? service.statusStyle : settings.statusStyle;
   const [statsOpen, setStatsOpen] = useState(service.showStats);
@@ -67,18 +69,18 @@ export default function Item({ service, groupName, useEqualHeights }) {
               className="flex-1 flex items-center justify-between rounded-r-md service-title-text"
             >
               <div className="flex-1 px-2 py-2 text-sm text-left z-10 service-name">
-                {service.name}
+                {tr(service.name)}
                 <p className="text-theme-500 dark:text-theme-300 text-xs font-light service-description">
-                  {service.description}
+                  {tr(service.description)}
                 </p>
               </div>
             </a>
           ) : (
             <div className="flex-1 flex items-center justify-between rounded-r-md service-title-text">
               <div className="flex-1 px-2 py-2 text-sm text-left z-10 service-name">
-                {service.name}
+                {tr(service.name)}
                 <p className="text-theme-500 dark:text-theme-300 text-xs font-light service-description">
-                  {service.description}
+                  {tr(service.description)}
                 </p>
               </div>
             </div>

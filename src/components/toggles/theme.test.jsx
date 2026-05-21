@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ThemeContext } from "utils/contexts/theme";
@@ -25,9 +25,7 @@ describe("components/toggles/theme", () => {
       </ThemeContext.Provider>,
     );
 
-    // The toggle is a clickable icon rendered as an svg (react-icons).
-    const toggles = document.querySelectorAll("svg");
-    fireEvent.click(toggles[1]);
+    fireEvent.click(screen.getByRole("button", { name: "切换到白天模式 / Switch to light mode" }));
     expect(setTheme).toHaveBeenCalledWith("light");
   });
 
@@ -39,8 +37,7 @@ describe("components/toggles/theme", () => {
       </ThemeContext.Provider>,
     );
 
-    const toggles = document.querySelectorAll("svg");
-    fireEvent.click(toggles[1]);
+    fireEvent.click(screen.getByRole("button", { name: "切换到黑夜模式 / Switch to dark mode" }));
     expect(setTheme).toHaveBeenCalledWith("dark");
   });
 });

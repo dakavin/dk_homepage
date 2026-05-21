@@ -47,6 +47,16 @@ next-env.d.ts
 # IDEs
 /.idea/
 
+# local AI / working artifacts
+/.claude/
+/.spec-workflow/
+/.codex-next-dev.log
+/MEMORY.md
+/personal-homepage-hero.html
+/personal-homepage-hero.html.artifact.json
+/mpc*-image.png
+/src.zip
+
 # Zensical documentation
 site*/
 .cache/

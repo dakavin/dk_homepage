@@ -5,6 +5,7 @@ import ErrorBoundary from "components/errorboundry";
 import ResolvedIcon from "components/resolvedicon";
 import { useEffect, useRef } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { useDkTranslate } from "utils/i18n/dk-translate";
 
 export default function BookmarksGroup({
   bookmarks,
@@ -15,6 +16,7 @@ export default function BookmarksGroup({
   maxGroupColumns,
 }) {
   const panel = useRef();
+  const tr = useDkTranslate();
 
   useEffect(() => {
     if (layout?.initiallyCollapsed ?? groupsInitiallyCollapsed) panel.current.style.height = `0`;
@@ -42,8 +44,8 @@ export default function BookmarksGroup({
                     <ResolvedIcon icon={layout.icon} />
                   </div>
                 )}
-                <h2 className="text-theme-800 dark:text-theme-300 text-xl font-medium bookmark-group-name">
-                  {bookmarks.name}
+                <h2 className="flex text-theme-800 dark:text-theme-300 text-xl font-medium bookmark-group-name">
+                  {tr(bookmarks.name)}
                 </h2>
                 <MdKeyboardArrowDown
                   className={classNames(

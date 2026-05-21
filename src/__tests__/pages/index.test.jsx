@@ -193,7 +193,7 @@ describe("pages/index getStaticProps", () => {
     expect(result.props.fallback["/api/bookmarks"]).toEqual([{ name: "bm" }]);
     expect(result.props.fallback["/api/widgets"]).toEqual([{ type: "search" }]);
     expect(result.props.fallback["/api/hash"]).toBe(false);
-    expect(serverSideTranslations).toHaveBeenCalledWith("en");
+    expect(serverSideTranslations).toHaveBeenCalledWith("en", ["common"], null, ["zh-Hans", "en"]);
   });
 
   it("normalizes legacy language codes before requesting translations", async () => {
@@ -202,7 +202,7 @@ describe("pages/index getStaticProps", () => {
     const { getStaticProps } = await import("pages/index.jsx");
     await getStaticProps();
 
-    expect(serverSideTranslations).toHaveBeenCalledWith("zh-Hans");
+    expect(serverSideTranslations).toHaveBeenCalledWith("zh-Hans", ["common"], null, ["zh-Hans", "en"]);
   });
 
   it("falls back to empty settings and en translations on errors", async () => {
@@ -216,7 +216,7 @@ describe("pages/index getStaticProps", () => {
     expect(result.props.fallback["/api/services"]).toEqual([]);
     expect(result.props.fallback["/api/bookmarks"]).toEqual([]);
     expect(result.props.fallback["/api/widgets"]).toEqual([]);
-    expect(serverSideTranslations).toHaveBeenCalledWith("en");
+    expect(serverSideTranslations).toHaveBeenCalledWith("en", ["common"], null, ["zh-Hans"]);
     expect(logger.error).toHaveBeenCalled();
   });
 });

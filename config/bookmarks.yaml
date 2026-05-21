@@ -1,17 +1,2 @@
-# 快捷链接区域（显示在页面右侧或底部）
-- 开发:
-    - GitHub:
-        # abbr = 显示的缩写文字（没图标时用）
-        - abbr: GH
-          href: https://github.com/
-    - Cloudflare:
-        - abbr: CF
-          href: https://dash.cloudflare.com/
-    - netcup CCP:
-        - abbr: NC
-          href: https://www.customercontrolpanel.de/
-- 文档:
-    - Obsidian 笔记:
-        - abbr: DN
-          # obsidian:// 是 Obsidian 的自定义协议，点击会打开本地 Obsidian
-          href: obsidian://
+# bookmarks.yaml — 已迁移至 services.yaml，统一使用服务卡片 + 监控圆点
+# Bookmarks have been migrated to services.yaml for unified status dot support.

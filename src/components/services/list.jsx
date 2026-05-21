@@ -7,7 +7,7 @@ export default function List({ groupName, services, layout, useEqualHeights, hea
   return (
     <ul
       className={classNames(
-        layout?.style === "row" ? `grid ${columnMap[layout?.columns]} gap-x-2` : "flex flex-col",
+        layout?.style === "row" ? `grid ${columnMap[layout?.columns]} gap-2` : "flex flex-col gap-2",
         header ? "mt-3" : "",
         "services-list",
       )}

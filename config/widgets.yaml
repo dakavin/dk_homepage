@@ -1,32 +1,47 @@
-# 问候语组件，显示在页面顶部
+# =====================================================================
+# 信息小部件 / Information widgets (顶部组件区)
+# 文档: https://gethomepage.dev/widgets/info/
+# =====================================================================
+
+# 站点 logo (左侧)
+- logo:
+    icon: /images/logo.png
+
+# 问候语 - 会按当前时段显示 "早安/午安/晚安"
 - greeting:
-    # 字号：xl = 大号
-    text_size: xl
-    # 问候语内容
-    text: Dakkk's VPS Dashboard
-# 日期时间组件
+    text_size: 4xl
+    text: "DK 主页"
+
+# 日期与时间
 - datetime:
     text_size: xl
     format:
-      # 时间显示格式：short = "14:30"
-      timeStyle: short
-      # 日期显示格式：long = "2026年5月17日"
-      dateStyle: long
-      # 24小时制
-      hourCycle: h23
-# 系统资源组件（显示 CPU/内存/磁盘使用率）
+      timeStyle: short      # short = HH:mm
+      dateStyle: short      # short = 2026/05/18
+      hourCycle: h23        # 24 小时制
+
+# 系统资源 (CPU / 内存 / 磁盘)
 - resources:
-    # 显示 CPU 使用率
-    cpu: true
-    # 显示内存使用率
-    memory: true
-    # 显示哪个分区的磁盘使用率
-    disk: /
-    # 组件标签名
     label: VPS
-# 搜索框组件
+    cpu: true
+    memory: true
+    disk: /
+
+# 天气 (open-meteo 免费, 不需要 key)
+# 默认: 广州。可改成你的城市经纬度
+- openmeteo:
+    label: 广州
+    latitude: 23.1291
+    longitude: 113.2644
+    timezone: Asia/Shanghai
+    units: metric           # metric (摄氏) | imperial (华氏)
+    cache: 10               # 缓存分钟数
+    format:
+      maximumFractionDigits: 1
+
+# 搜索框 (右侧)
 - search:
-    # 搜索引擎：duckduckgo（隐私友好）
-    provider: duckduckgo
-    # 搜索结果在新标签页打开
+    provider: [bing, baidu, google, duckduckgo]
     target: _blank
+    focus: false
+    showSearchSuggestions: true

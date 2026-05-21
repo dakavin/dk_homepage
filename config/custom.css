@@ -1,0 +1,873 @@
+/* ===================================================================
+ * Homepage 自定义 CSS
+ * 灵感来源:
+ *   - homepage-master 参考项目 customers.css / custom.css
+ *   - dakavin/Home (玻璃拟态、悬浮动画)
+ * 本文件由 homepage 通过 /api/config/custom.css 自动加载
+ * =================================================================== */
+
+/* ---------- 0. 全局字体 ----------------------------------------- */
+
+@font-face {
+  font-family: "JetBrainsMono";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/JetBrainsMono.ttf") format("truetype");
+}
+
+/* 默认: 维持 globals.css 里 Manrope 的设定, 这里不强制覆盖 */
+html.dk-font-default,
+html.dk-font-default body {
+  font-family: Manrope, "Manrope-Fallback", Arial, sans-serif;
+}
+
+/* JetBrains Mono 等宽字体 */
+html.dk-font-jetbrains,
+html.dk-font-jetbrains body {
+  font-family: "JetBrainsMono", "Menlo", "Consolas", "Courier New", monospace;
+  letter-spacing: 0.2px;
+}
+
+/* 系统默认: 使用平台字体栈, 中文使用各端原生 UI 字体 */
+html.dk-font-system,
+html.dk-font-system body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ---------- 1. 背景层 (custom.js 会设置 background-image) ---------- */
+
+#background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+#background .dk-bg-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(3px);
+  transform: scale(1.025);
+  transition: opacity 1.6s ease-in-out;
+  will-change: opacity;
+}
+
+#page_wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+/* 让顶部组件区也带毛玻璃 */
+#information-widgets,
+#information-widgets.boxed {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ---------- 2. Tab 栏样式 ---------- */
+
+#myTab {
+  border-radius: 14px;
+  padding: 4px;
+  background-color: rgb(255 255 255 / 0.06) !important;
+  backdrop-filter: blur(8px) saturate(160%);
+  -webkit-backdrop-filter: blur(8px) saturate(160%);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  box-shadow: 0 4px 24px rgb(0 0 0 / 0.18);
+}
+
+#myTab li > button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 10px !important;
+  margin: 2px;
+}
+
+#myTab li:hover > button:not([aria-selected="true"]) {
+  background-color: rgb(255 255 255 / 0.08) !important;
+  transform: translateY(-1px);
+}
+
+#myTab li > button[aria-selected="true"] {
+  background-color: rgb(255 255 255 / 0.16) !important;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.2);
+}
+
+/* ---------- 3. 服务卡片 (毛玻璃) ---------- */
+
+.service-card,
+.bookmark a {
+  display: block;
+  height: 100%;
+  margin-bottom: 0 !important;
+  background-color: rgb(255 255 255 / 0.1) !important;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.12);
+}
+
+.bookmark {
+  min-height: 44px;
+  margin-bottom: 0;
+}
+
+.bookmark > a > div {
+  min-height: 44px;
+}
+
+.service-card:hover,
+.bookmark a:hover {
+  background-color: rgb(255 255 255 / 0.16) !important;
+  border-color: rgb(255 255 255 / 0.22);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.28);
+}
+
+/* 浅色模式下卡片配色微调 */
+:root.scheme-light .service-card,
+:root.scheme-light .bookmark a {
+  background-color: rgb(255 255 255 / 0.68) !important;
+  border-color: rgb(0 0 0 / 0.06);
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.08);
+}
+
+:root.scheme-light .service-card:hover,
+:root.scheme-light .bookmark a:hover {
+  background-color: rgb(255 255 255 / 0.85) !important;
+  box-shadow: 0 10px 28px rgb(0 0 0 / 0.16);
+}
+
+/* 服务与书签文字颜色统一: 浅色偏黑, 深色偏白 */
+.service-name,
+.bookmark-name {
+  color: rgb(var(--color-100)) !important;
+  text-shadow: 0 1px 5px rgb(0 0 0 / 0.2);
+}
+
+.service-description,
+.bookmark-description {
+  color: rgb(var(--color-200)) !important;
+  text-shadow: 0 1px 4px rgb(0 0 0 / 0.18);
+}
+
+:root.scheme-light .service-name,
+:root.scheme-light .bookmark-name {
+  color: rgb(var(--color-900)) !important;
+  text-shadow: 0 1px 3px rgb(255 255 255 / 0.7);
+}
+
+:root.scheme-light .service-description,
+:root.scheme-light .bookmark-description {
+  color: rgb(var(--color-700)) !important;
+  text-shadow: 0 1px 2px rgb(255 255 255 / 0.65);
+}
+
+/* 分组标题加阴影避免被亮背景吞掉 */
+.service-group-name,
+.bookmark-group-name {
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.45);
+  font-weight: 600;
+}
+
+:root.scheme-light .service-group-name,
+:root.scheme-light .bookmark-group-name {
+  text-shadow: 0 1px 4px rgb(255 255 255 / 0.6);
+}
+
+/* ---------- 4. 顶栏问候 / datetime 文字阴影 ---------- */
+
+#information-widgets [class*="text-"],
+#widgets-wrap [class*="text-"] {
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.35);
+}
+
+:root.scheme-light #information-widgets [class*="text-"],
+:root.scheme-light #widgets-wrap [class*="text-"] {
+  text-shadow: 0 1px 4px rgb(255 255 255 / 0.5);
+}
+
+/* ---------- 5. URL 悬浮提示 (custom.js 注入) ---------- */
+
+.dk-url-tooltip {
+  position: fixed;
+  background: rgb(0 0 0 / 0.82);
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  z-index: 10001;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.4);
+  animation: dk-fade-in 0.18s ease-out;
+}
+
+@keyframes dk-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- 6. Hitokoto 一言 (custom.js 注入) ---------- */
+
+#dk-hitokoto {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  max-width: min(80vw, 720px);
+  padding: 8px 18px;
+  background: rgb(0 0 0 / 0.32);
+  color: rgb(255 255 255 / 0.86);
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 30;
+  text-align: center;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  box-shadow: 0 4px 18px rgb(0 0 0 / 0.18);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+#dk-hitokoto:hover {
+  background: rgb(0 0 0 / 0.48);
+  color: #fff;
+  transform: translate(-50%, -2px);
+}
+
+#dk-hitokoto::before {
+  content: "「 ";
+  opacity: 0.6;
+}
+
+#dk-hitokoto::after {
+  content: " 」";
+  opacity: 0.6;
+}
+
+/* 浅色模式 */
+:root.scheme-light #dk-hitokoto {
+  background: rgb(255 255 255 / 0.7);
+  color: rgb(0 0 0 / 0.78);
+  border-color: rgb(0 0 0 / 0.06);
+  text-shadow: none;
+}
+
+/* ---------- 7. 时光进度条 (custom.js 注入) ---------- */
+
+#dk-time-progress {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: auto;
+  margin: 12px 32px 0;
+  padding: 4px;
+  background-color: rgb(255 255 255 / 0.06) !important;
+  color: rgb(255 255 255 / 0.86);
+  font-size: 14px;
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  box-shadow: 0 4px 24px rgb(0 0 0 / 0.18);
+  font-family: inherit;
+}
+
+:root.scheme-light #dk-time-progress {
+  background: rgb(255 255 255 / 0.55) !important;
+  color: rgb(0 0 0 / 0.78);
+  border-color: rgb(0 0 0 / 0.06);
+}
+
+#dk-time-progress .dk-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.07);
+  border: 1px solid rgb(255 255 255 / 0.08);
+}
+
+:root.scheme-light #dk-time-progress .dk-bar-row {
+  background: rgb(255 255 255 / 0.36);
+  border-color: rgb(0 0 0 / 0.05);
+}
+
+#dk-time-progress .dk-bar-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+#dk-time-progress .dk-bar-pct {
+  /* 与 今日/本周/本月/今年 标签保持一致颜色 */
+  color: rgb(255 255 255 / 0.86);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+:root.scheme-light #dk-time-progress .dk-bar-pct {
+  color: rgb(0 0 0 / 0.78);
+}
+
+#dk-time-progress .dk-bar {
+  width: 100%;
+  height: 6px;
+  background: rgb(var(--color-500) / 0.16);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+#dk-time-progress .dk-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgb(var(--color-600)) 0%, rgb(var(--color-400)) 100%);
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+/* ---------- 8. 右侧常驻控制栏 (index.jsx 渲染) ------------------- */
+/* React 端通过 Tailwind 已经设置了 fixed/right-3/top-1/2 等位置,
+   这里再补充内部各项控件的统一外观 (与原版 toggle 的样式融合) */
+
+#dk-side-rail,
+.dk-side-rail {
+  position: fixed !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 50;
+  max-height: 90vh;
+  overflow: visible;
+}
+
+#dk-side-rail-handle,
+.dk-side-rail-handle {
+  right: 8px;
+  top: 50%;
+  width: 34px;
+  height: 46px;
+  transform: translateY(-50%);
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+#dk-side-rail-handle:hover,
+.dk-side-rail-handle:hover {
+  background: rgb(255 255 255 / 0.28);
+}
+
+.dk-side-rail > * {
+  position: relative;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  /* 抹平原 toggle 自带的 mr-3 / self-end 等 */
+  align-self: center !important;
+}
+
+/* 控件 hover 时整体高亮 */
+.dk-side-rail > * {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  transition: background 0.25s ease;
+}
+
+.dk-side-rail > *:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+
+:root.scheme-light .dk-side-rail > *:hover {
+  background: rgb(0 0 0 / 0.06);
+}
+
+.dk-side-rail #theme {
+  width: 36px;
+  min-width: 36px;
+  padding: 0;
+}
+
+.dk-side-rail button {
+  border-radius: 12px;
+}
+
+/* Color (Popover): fixed 定位，避免被右侧栏容器裁切 */
+.dk-color-panel {
+  top: 50%;
+  right: 64px;
+  transform: translateY(-50%);
+}
+
+.dk-color-slider {
+  height: 8px;
+  appearance: none;
+  border-radius: 999px;
+  outline: none;
+}
+
+.dk-color-slider::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  appearance: none;
+  border: 2px solid rgb(255 255 255 / 0.92);
+  border-radius: 999px;
+  background: rgb(var(--color-500));
+  box-shadow: 0 3px 12px rgb(0 0 0 / 0.28);
+  cursor: pointer;
+}
+
+.dk-color-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgb(255 255 255 / 0.92);
+  border-radius: 999px;
+  background: rgb(var(--color-500));
+  box-shadow: 0 3px 12px rgb(0 0 0 / 0.28);
+  cursor: pointer;
+}
+
+/* Language 控件原本带 mr-3 (右外边距) -> 抹掉 */
+.dk-side-rail #language {
+  margin-right: 0 !important;
+}
+
+/* 浅色模式下右侧栏背景再亮一点 */
+:root.scheme-light .dk-side-rail {
+  background: rgb(255 255 255 / 0.55) !important;
+  border-color: rgb(0 0 0 / 0.06) !important;
+}
+
+/* 隐藏的浮动按钮 (custom.js 旧版) - 防御性兜底 */
+#dk-float-buttons {
+  display: none !important;
+}
+
+/* ---------- 9. 滚动条美化 ---------------------------------------- */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.16);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(255 255 255 / 0.28);
+}
+
+/* ===================================================================
+ * 10. 移动端适配
+ * 思路:
+ *   - 右侧轨道横躺到底部, 变成横排
+ *   - 时光进度条在底部改为两列/单列
+ *   - Hitokoto 上移, 避免和底部工具栏重叠
+ * =================================================================== */
+
+@media screen and (max-width: 768px) {
+  /* 时光进度条: 底部两列显示 */
+  #dk-time-progress {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 12px 20px 0;
+    padding: 8px 10px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  /* Hitokoto: 上移, 单行省略 */
+  #dk-hitokoto {
+    bottom: 66px;
+    left: 10px;
+    right: 10px;
+    transform: none;
+    max-width: none;
+    font-size: 11px;
+    padding: 6px 12px;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  /* 右侧栏: 横躺到底部正中 */
+  #dk-side-rail,
+  .dk-side-rail {
+    top: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: max(6px, env(safe-area-inset-bottom)) !important;
+    transform: translateX(-50%) !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 8px 10px !important;
+    border-radius: 999px !important;
+    gap: 6px !important;
+    /* 不要太宽, 避免遮挡卡片 */
+    max-width: calc(100vw - 24px);
+    max-height: none;
+    overflow: visible;
+    box-shadow: 0 10px 28px rgb(0 0 0 / 0.22);
+  }
+
+  #dk-side-rail-handle,
+  .dk-side-rail-handle {
+    top: auto;
+    left: 50%;
+    right: auto;
+    bottom: max(6px, env(safe-area-inset-bottom));
+    width: 46px;
+    height: 34px;
+    transform: translateX(-50%);
+  }
+
+  .dk-side-rail > * {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+  }
+
+  .dk-side-rail #theme {
+    width: 36px;
+    min-width: 36px;
+    padding: 0;
+  }
+
+  /* Color popover 在底部横排时改为向上弹出 */
+  .dk-color-panel {
+    top: auto;
+    right: auto;
+    left: 50%;
+    bottom: 62px;
+    transform: translateX(-50%);
+  }
+
+  /* Hitokoto: 保持在底部工具栏上方 */
+  #dk-hitokoto {
+    bottom: 64px;
+  }
+
+  /* 时光进度条进一步紧凑 */
+  #dk-time-progress {
+    grid-template-columns: 1fr;
+    margin: 12px 12px 0;
+    font-size: 13px;
+  }
+
+  #footer {
+    padding-bottom: 88px;
+  }
+}
+
+/* ===================================================================
+ * 11. Widget Strip (新顶部信息栏)
+ * =================================================================== */
+
+.dk-widget-strip {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  margin: 20px 32px 0;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 24px rgb(0 0 0 / 0.18);
+  min-width: 0;
+  z-index: 20;
+  position: relative;
+}
+
+:root.scheme-light .dk-widget-strip {
+  background: rgb(255 255 255 / 0.55);
+  border-color: rgb(0 0 0 / 0.06);
+}
+
+@media (max-width: 1100px) {
+  .dk-widget-strip { flex-wrap: wrap; }
+}
+
+@media (max-width: 768px) {
+  .dk-widget-strip {
+    margin: 12px 20px 0;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+}
+
+/* Logo — 内联 SVG，透明背景，继承文字色 */
+.dk-ws-logo {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-primary, rgb(var(--color-100)));
+}
+
+:root.scheme-light .dk-ws-logo {
+  color: rgb(var(--color-900));
+}
+
+.dk-ws-logo-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.25));
+}
+
+:root.scheme-light .dk-ws-logo-svg {
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.08));
+}
+
+.dk-ws-divider {
+  width: 1px;
+  height: 36px;
+  flex-shrink: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(255 255 255 / 0.18) 22%,
+    rgb(255 255 255 / 0.18) 78%,
+    transparent 100%
+  );
+}
+
+:root.scheme-light .dk-ws-divider {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(0 0 0 / 0.12) 22%,
+    rgb(0 0 0 / 0.12) 78%,
+    transparent 100%
+  );
+}
+
+/* Brand 单元 — flex 居中，无渐变，直接用前景色 */
+.dk-ws-cell-brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.dk-ws-cell-brand .dk-ws-main {
+  letter-spacing: 0.5px;
+  color: var(--fg-primary, rgb(var(--color-100)));
+  background: none;
+  -webkit-background-clip: border-box;
+          background-clip: border-box;
+}
+
+/* 单行单元 — 无子标签，主值垂直居中 */
+.dk-ws-cell-solo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+/* 双行等大单元 — 日期和时间各占一行 */
+.dk-ws-cell-stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 4px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.dk-ws-line {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--fg-primary, rgb(var(--color-100)));
+  text-shadow: 0 1px 5px rgb(0 0 0 / 0.2);
+  white-space: nowrap;
+}
+
+:root.scheme-light .dk-ws-line {
+  color: rgb(var(--color-900));
+  text-shadow: 0 1px 3px rgb(255 255 255 / 0.7);
+}
+
+.dk-ws-line-mono {
+  font-family: "JetBrainsMono", "Menlo", "Consolas", monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.2px;
+}
+
+/* ws-main — 单行大字 (solo / brand 单元) */
+.dk-ws-main {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--fg-primary, rgb(var(--color-100)));
+  text-shadow: 0 1px 5px rgb(0 0 0 / 0.2);
+  white-space: nowrap;
+}
+
+:root.scheme-light .dk-ws-main {
+  color: rgb(var(--color-900));
+  text-shadow: 0 1px 3px rgb(255 255 255 / 0.7);
+}
+
+/* 每日一句 — 替换原 VPS + stats 区块，弹性填充中间空间 */
+.dk-ws-hitokoto {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  color: var(--fg-primary, rgb(var(--color-100)));
+  font-size: 13px;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+  text-shadow: 0 1px 5px rgb(0 0 0 / 0.2);
+  transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.dk-ws-hitokoto:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+
+:root.scheme-light .dk-ws-hitokoto {
+  background: rgb(255 255 255 / 0.4);
+  border-color: rgb(0 0 0 / 0.04);
+  color: rgb(var(--color-900));
+  text-shadow: none;
+}
+
+.dk-ws-hitokoto-quote {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dk-ws-hitokoto-quote::before { content: "「"; opacity: 0.55; margin-right: 2px; }
+.dk-ws-hitokoto-quote::after  { content: "」"; opacity: 0.55; margin-left: 2px; }
+
+.dk-ws-hitokoto-from {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--fg-muted, rgb(var(--color-300)));
+  font-family: "JetBrainsMono", "Menlo", "Consolas", monospace;
+  letter-spacing: 0.2px;
+}
+
+:root.scheme-light .dk-ws-hitokoto-from {
+  color: rgb(var(--color-500));
+}
+
+@media (max-width: 1100px) {
+  .dk-ws-hitokoto { order: 99; flex-basis: 100%; }
+}
+
+/* 搜索框 */
+.dk-ws-search {
+  margin-left: auto;
+  flex-shrink: 0;
+  min-width: 180px;
+  max-width: 260px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.1);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  cursor: pointer;
+  color: var(--fg-secondary, rgb(var(--color-200)));
+  font-size: 13px;
+  text-shadow: 0 1px 5px rgb(0 0 0 / 0.2);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+:root.scheme-light .dk-ws-search {
+  background: rgb(255 255 255 / 0.68);
+  border-color: rgb(0 0 0 / 0.06);
+  color: rgb(var(--color-700));
+  text-shadow: none;
+}
+
+.dk-ws-search-text {
+  flex: 1;
+  text-align: left;
+}
+
+.dk-ws-search-kbd {
+  font-family: "JetBrainsMono", "Menlo", "Consolas", monospace;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  color: var(--fg-muted, rgb(var(--color-300)));
+}
+
+:root.scheme-light .dk-ws-search-kbd {
+  background: rgb(0 0 0 / 0.04);
+  border-color: rgb(0 0 0 / 0.08);
+  color: rgb(var(--color-500));
+}
+
+.dk-ws-search:hover {
+  background: rgb(255 255 255 / 0.16);
+  color: var(--fg-primary, rgb(var(--color-100)));
+  border-color: rgb(255 255 255 / 0.22);
+}
+
+:root.scheme-light .dk-ws-search:hover {
+  background: rgb(255 255 255 / 0.85);
+  color: rgb(var(--color-900));
+  border-color: rgb(0 0 0 / 0.12);
+}
+
+/* 极小屏 (≤ 360): 干脆隐藏 hitokoto, 避免与底部工具栏撞车 */
+@media screen and (max-width: 360px) {
+  #dk-hitokoto {
+    display: none;
+  }
+}

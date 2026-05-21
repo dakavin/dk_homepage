@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { appWithTranslation } from "next-i18next";
 import Head from "next/head";
+import { useEffect } from "react";
 import "styles/globals.css";
 import "styles/manrope.css";
 import "styles/theme.css";
@@ -11,6 +12,96 @@ import { TabProvider } from "utils/contexts/tab";
 import { ThemeProvider } from "utils/contexts/theme";
 
 import nextI18nextConfig from "../../next-i18next.config";
+
+const MIN_LOADING_MS = 1800;
+const MAX_LOADING_MS = 8000;
+
+function waitForWindowLoad() {
+  if (document.readyState === "complete") {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    window.addEventListener("load", resolve, { once: true });
+  });
+}
+
+function waitForFonts() {
+  if (!document.fonts?.ready) {
+    return Promise.resolve();
+  }
+
+  return document.fonts.ready.catch(() => undefined);
+}
+
+function waitForImages() {
+  const images = Array.from(document.images || []);
+  if (!images.length) {
+    return Promise.resolve();
+  }
+
+  return Promise.all(
+    images.map((image) => {
+      if (image.complete) {
+        return Promise.resolve();
+      }
+
+      return new Promise((resolve) => {
+        image.addEventListener("load", resolve, { once: true });
+        image.addEventListener("error", resolve, { once: true });
+      });
+    }),
+  );
+}
+
+function getBackgroundImageUrls() {
+  const background = document.querySelector("#background");
+  if (!background) {
+    return [];
+  }
+
+  const value = window.getComputedStyle(background).backgroundImage || background.style.backgroundImage || "";
+  return Array.from(value.matchAll(/url\\(["']?([^"')]+)["']?\\)/g)).map((match) => match[1]);
+}
+
+function waitForBackgroundImages() {
+  const urls = getBackgroundImageUrls();
+  if (!urls.length) {
+    return Promise.resolve();
+  }
+
+  return Promise.all(
+    urls.map(
+      (url) =>
+        new Promise((resolve) => {
+          if (!window.Image) {
+            resolve();
+            return;
+          }
+
+          const image = new window.Image();
+          image.onload = resolve;
+          image.onerror = resolve;
+          image.src = url;
+        }),
+    ),
+  );
+}
+
+function releaseLoadingScreen() {
+  const loader = document.querySelector("#dk-preload-screen");
+
+  document.body.classList.remove("dk-app-loading");
+
+  if (!loader) {
+    return;
+  }
+
+  loader.classList.add("loaded");
+  window.setTimeout(() => {
+    loader.remove();
+  }, 1400);
+}
 
 // eslint-disable-next-line no-unused-vars
 const tailwindSafelist = [
@@ -71,6 +162,34 @@ const tailwindSafelist = [
 ];
 
 function MyApp({ Component, pageProps }) {
+  useEffect(() => {
+    let cancelled = false;
+    const forceReleaseTimer = window.setTimeout(() => {
+      if (!cancelled) {
+        releaseLoadingScreen();
+      }
+    }, MAX_LOADING_MS);
+    const minimumLoading = new Promise((resolve) => {
+      window.setTimeout(resolve, MIN_LOADING_MS);
+    });
+    const maximumLoading = new Promise((resolve) => {
+      window.setTimeout(resolve, MAX_LOADING_MS);
+    });
+    const pageReady = waitForWindowLoad().then(() => Promise.all([waitForFonts(), waitForImages(), waitForBackgroundImages()]));
+
+    Promise.all([minimumLoading, Promise.race([pageReady, maximumLoading])]).then(() => {
+      if (!cancelled) {
+        window.clearTimeout(forceReleaseTimer);
+        releaseLoadingScreen();
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(forceReleaseTimer);
+    };
+  }, []);
+
   return (
     <SWRConfig
       value={{

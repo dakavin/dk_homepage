@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- dark rounded background -->
+  <rect width="64" height="64" rx="14" fill="#1e293b"/>
+  <!-- DK monogram — white -->
+  <g fill="white">
+    <!-- D letter -->
+    <path fill-rule="evenodd" d="M12 16 h6 a14 14 0 0 1 0 28 h-6 z M18 21 v18 a9 9 0 0 0 0 -18 z"/>
+    <!-- K stem -->
+    <rect x="38" y="16" width="5" height="32"/>
+    <!-- K arms -->
+    <path d="M43 31 L53 16 h5 L48 31 L58 48 h-5 L43 33 z"/>
+  </g>
+  <!-- cyan accent dot -->
+  <circle cx="54" cy="12" r="3.2" fill="#22d3ee"/>
+</svg>

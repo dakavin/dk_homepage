@@ -4,6 +4,7 @@ import ResolvedIcon from "components/resolvedicon";
 import List from "components/services/list";
 import { useEffect, useRef } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { useDkTranslate } from "utils/i18n/dk-translate";
 
 import { columnMap } from "../../utils/layout/columns";
 
@@ -17,6 +18,7 @@ export default function ServicesGroup({
   isSubgroup,
 }) {
   const panel = useRef();
+  const tr = useDkTranslate();
 
   useEffect(() => {
     if (layout?.initiallyCollapsed ?? groupsInitiallyCollapsed) panel.current.style.height = `0`;
@@ -32,6 +34,7 @@ export default function ServicesGroup({
         "services-group flex-1",
         layout?.style === "row" ? "basis-full" : "basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4",
         layout?.style !== "row" && maxGroupColumns ? `3xl:basis-1/${maxGroupColumns}` : "",
+        isSubgroup ? "" : "mb-3 last:mb-0",
         groupPadding,
         isSubgroup ? "subgroup" : "",
       )}
@@ -47,7 +50,7 @@ export default function ServicesGroup({
                   </div>
                 )}
                 <h2 className="flex text-theme-800 dark:text-theme-300 text-xl font-medium service-group-name">
-                  {group.name}
+                  {tr(group.name)}
                 </h2>
                 <MdKeyboardArrowDown
                   className={classNames(

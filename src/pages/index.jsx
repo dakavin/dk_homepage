@@ -5,8 +5,12 @@ import ErrorBoundary from "components/errorboundry";
 import QuickLaunch from "components/quicklaunch";
 import ServicesGroup from "components/services/group";
 import Tab, { slugifyAndEncode } from "components/tab";
+import ColorToggle from "components/toggles/color";
+import FontToggle from "components/toggles/font";
+import LanguageToggle from "components/toggles/language";
 import Revalidate from "components/toggles/revalidate";
-import Widget from "components/widgets/widget";
+import ThemeToggle from "components/toggles/theme";
+import WidgetStrip from "components/widget-strip";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import dynamic from "next/dynamic";
@@ -14,7 +18,15 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import Script from "next/script";
 import { useContext, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { BiError } from "react-icons/bi";
+import {
+  MdImage,
+  MdKeyboardArrowDown,
+  MdKeyboardArrowRight,
+  MdKeyboardArrowUp,
+  MdUnfoldMore,
+} from "react-icons/md";
 import useSWR, { SWRConfig } from "swr";
 import { ColorContext } from "utils/contexts/color";
 import { SettingsContext } from "utils/contexts/settings";
@@ -27,19 +39,9 @@ import useWindowFocus from "utils/hooks/window-focus";
 import createLogger from "utils/logger";
 import themes from "utils/styles/themes";
 
-const ThemeToggle = dynamic(() => import("components/toggles/theme"), {
-  ssr: false,
-});
-
-const ColorToggle = dynamic(() => import("components/toggles/color"), {
-  ssr: false,
-});
-
 const Version = dynamic(() => import("components/version"), {
   ssr: false,
 });
-
-const rightAlignedWidgets = ["weatherapi", "openweathermap", "weather", "openmeteo", "search", "datetime"];
 
 // Normalize language codes so older config values like zh-CN still point to Crowdin-provided ones
 const LANGUAGE_ALIASES = {
@@ -72,7 +74,9 @@ export async function getStaticProps() {
           "/api/widgets": widgets,
           "/api/hash": false,
         },
-        ...(await serverSideTranslations(language)),
+        // Preload zh-Hans + en so the LanguageToggle can switch without
+        // a full reload + SSR roundtrip.
+        ...(await serverSideTranslations(language, ["common"], null, ["zh-Hans", "en"])),
       },
     };
   } catch (e) {
@@ -88,7 +92,7 @@ export async function getStaticProps() {
           "/api/widgets": [],
           "/api/hash": false,
         },
-        ...(await serverSideTranslations("en")),
+        ...(await serverSideTranslations("en", ["common"], null, ["zh-Hans"])),
       },
     };
   }
@@ -189,14 +193,6 @@ function Index({ initialSettings, fallback }) {
   );
 }
 
-const headerStyles = {
-  boxed:
-    "m-5 mb-0 sm:m-9 sm:mb-0 rounded-md shadow-md shadow-theme-900/10 dark:shadow-theme-900/20 bg-theme-100/20 dark:bg-white/5 p-3",
-  underlined: "m-5 mb-0 sm:m-9 sm:mb-1 border-b-2 pb-4 border-theme-800 dark:border-theme-200/50",
-  clean: "m-5 mb-0 sm:m-9 sm:mb-0",
-  boxedWidgets: "m-5 mb-0 sm:m-9 sm:mb-0 sm:mt-1",
-};
-
 function getAllServices(services) {
   function getServices(group) {
     let nestedServices = [...group.services];
@@ -207,6 +203,94 @@ function getAllServices(services) {
   }
 
   return [...services.map(getServices).flat()];
+}
+
+function SideRail({ settings }) {
+  const [mounted, setMounted] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  const scrollToTop = () => {
+    const scrollTarget = document.querySelector("#inner_wrapper");
+    if (scrollTarget) {
+      scrollTarget.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const changeWallpaper = () => {
+    if (typeof window.dkNextWallpaper === "function") {
+      window.dkNextWallpaper();
+      return;
+    }
+    window.dispatchEvent(new Event("dk:next-wallpaper"));
+  };
+
+  return createPortal(
+    collapsed ? (
+      <button
+        id="dk-side-rail-handle"
+        type="button"
+        onClick={() => setCollapsed(false)}
+        title="展开工具栏 / Show toolbar"
+        aria-label="展开工具栏 / Show toolbar"
+        className="dk-side-rail-handle fixed z-50 flex items-center justify-center rounded-full bg-white/20 dark:bg-black/35 backdrop-blur-md border border-white/10 shadow-[0_6px_18px_rgba(0,0,0,0.2)] text-theme-800 dark:text-theme-200"
+      >
+        <MdUnfoldMore className="h-5 w-5" />
+      </button>
+    ) : (
+      <div
+        id="dk-side-rail"
+        className="dk-side-rail fixed right-3 top-1/2 z-50 flex flex-col items-center gap-2 p-2 rounded-2xl bg-white/15 dark:bg-black/35 backdrop-blur-md border border-white/10 shadow-[0_4px_18px_rgba(0,0,0,0.18)]"
+      >
+        {!settings?.color && <ColorToggle />}
+        <FontToggle />
+        <LanguageToggle />
+        {!settings.theme && <ThemeToggle />}
+        <button
+          id="dk-next-wallpaper"
+          type="button"
+          onClick={changeWallpaper}
+          title="更换壁纸 / Change wallpaper"
+          aria-label="更换壁纸 / Change wallpaper"
+          className="flex h-9 w-9 items-center justify-center cursor-pointer text-theme-800 dark:text-theme-200 hover:text-theme-600 dark:hover:text-theme-100 transition-colors"
+        >
+          <MdImage className="h-5 w-5" />
+        </button>
+        <Revalidate />
+        <button
+          id="dk-scroll-top"
+          type="button"
+          onClick={scrollToTop}
+          title="返回顶部 / Back to top"
+          aria-label="返回顶部 / Back to top"
+          className="flex h-9 w-9 items-center justify-center cursor-pointer text-theme-800 dark:text-theme-200 hover:text-theme-600 dark:hover:text-theme-100 transition-colors"
+        >
+          <MdKeyboardArrowUp className="h-6 w-6" />
+        </button>
+        <button
+          id="dk-collapse-rail"
+          type="button"
+          onClick={() => setCollapsed(true)}
+          title="收起工具栏 / Hide toolbar"
+          aria-label="收起工具栏 / Hide toolbar"
+          className="flex h-9 w-9 items-center justify-center cursor-pointer text-theme-800 dark:text-theme-200 hover:text-theme-600 dark:hover:text-theme-100 transition-colors"
+        >
+          <MdKeyboardArrowRight className="hidden h-6 w-6 sm:block" />
+          <MdKeyboardArrowDown className="h-6 w-6 sm:hidden" />
+        </button>
+      </div>
+    ),
+    document.body,
+  );
 }
 
 function Home({ initialSettings }) {
@@ -230,7 +314,18 @@ function Home({ initialSettings }) {
   );
 
   useEffect(() => {
-    const language = normalizeLanguage(settings.language);
+    // Allow client-side override of language via localStorage (set by
+    // src/components/toggles/language.jsx and config/custom.js). Falls back
+    // to settings.language from settings.yaml when no override is stored.
+    let storedLang = null;
+    if (typeof window !== "undefined") {
+      try {
+        storedLang = window.localStorage.getItem("dk_lang_pref");
+      } catch (_) {
+        /* ignore */
+      }
+    }
+    const language = normalizeLanguage(storedLang || settings.language);
     if (language) {
       i18n.changeLanguage(language);
     }
@@ -246,14 +341,19 @@ function Home({ initialSettings }) {
 
   const [searching, setSearching] = useState(false);
   const [searchString, setSearchString] = useState("");
-  const headerStyle = settings?.headerStyle || "underlined";
 
   useEffect(() => {
     function handleKeyDown(e) {
+      // ⌘K / Ctrl+K — 全局快捷键打开搜索
+      if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
+        e.preventDefault();
+        setSearching(true);
+        return;
+      }
       if (e.target.tagName === "BODY" || e.target.id === "inner_wrapper") {
         if (
           (e.key.length === 1 &&
-            e.key.match(/(\w|\s|[à-ü]|[À-Ü]|[\w\u0430-\u044f])/gi) &&
+            e.key.match(/(w|s|[à-ü]|[À-Ü]|[wа-я])/gi) &&
             !(e.altKey || e.ctrlKey || e.metaKey || e.shiftKey)) ||
           // accented characters and the bang may require modifier keys
           e.key.match(/([à-ü]|[À-Ü]|!)/g) ||
@@ -449,61 +549,14 @@ function Home({ initialSettings }) {
           isOpen={searching}
           setSearching={setSearching}
         />
-        <div
-          id="information-widgets"
-          className={classNames(
-            "flex flex-row flex-wrap justify-between z-20",
-            headerStyles[headerStyle],
-            settings.cardBlur !== undefined &&
-              headerStyle === "boxed" &&
-              `backdrop-blur${settings.cardBlur.length ? "-" : ""}${settings.cardBlur}`,
-          )}
-        >
-          <div id="widgets-wrap" className={classNames("flex flex-row w-full flex-wrap justify-between gap-x-2")}>
-            {widgets && (
-              <>
-                {widgets
-                  .filter((widget) => !rightAlignedWidgets.includes(widget.type))
-                  .map((widget, i) => (
-                    <Widget
-                      key={i}
-                      widget={widget}
-                      style={{ header: headerStyle, isRightAligned: false, cardBlur: settings.cardBlur }}
-                    />
-                  ))}
-
-                <div
-                  id="information-widgets-right"
-                  className={classNames(
-                    "m-auto flex flex-wrap grow sm:basis-auto justify-between md:justify-end",
-                    "m-auto flex flex-wrap grow sm:basis-auto justify-between md:justify-end gap-x-2",
-                  )}
-                >
-                  {widgets
-                    .filter((widget) => rightAlignedWidgets.includes(widget.type))
-                    .map((widget, i) => (
-                      <Widget
-                        key={i}
-                        widget={widget}
-                        style={{ header: headerStyle, isRightAligned: true, cardBlur: settings.cardBlur }}
-                      />
-                    ))}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+        <WidgetStrip widgets={widgets} onSearch={() => setSearching(true)} />
 
         {servicesAndBookmarksGroups}
 
-        <div id="footer" className="flex flex-col mt-auto p-8 w-full">
-          <div id="style" className="flex w-full justify-end">
-            {!settings?.color && <ColorToggle />}
-            <Revalidate />
-            {!settings.theme && <ThemeToggle />}
-          </div>
+        <SideRail settings={settings} />
 
-          <div id="version" className="flex mt-4 w-full justify-end">
+        <div id="footer" className="flex flex-col mt-auto p-8 w-full">
+          <div id="version" className="flex w-full justify-end">
             {!settings.hideVersion && <Version disableUpdateCheck={settings.disableUpdateCheck} />}
           </div>
         </div>

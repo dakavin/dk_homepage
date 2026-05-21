@@ -112,7 +112,7 @@ function relativeDate(date, formatter) {
 module.exports = {
   i18n: {
     defaultLocale: "en",
-    locales: ["en"],
+    locales: ["en", "zh-Hans"],
   },
   serializeConfig: false,
   use: [
