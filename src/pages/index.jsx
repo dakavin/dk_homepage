@@ -341,6 +341,31 @@ function Home({ initialSettings }) {
 
   const [searching, setSearching] = useState(false);
   const [searchString, setSearchString] = useState("");
+  // ===== 移动端分组默认折叠 ==========================================
+  // dk-app-loading 隐藏 #__next 至少 1800ms，useEffect 在 ~50ms 内完成，
+  // isMobile 在加载遮罩揭开前已确定，用户不会看到展开→折叠跳变。
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileResolved, setMobileResolved] = useState(false);
+
+  useEffect(() => {
+    const check = () => {
+      setIsMobile(window.innerWidth < 640);
+      setMobileResolved(true);
+    };
+    check();
+    const mq = window.matchMedia('(max-width: 639px)');
+    const mqHandler = (e) => setIsMobile(e.matches);
+    mq.addEventListener('change', mqHandler);
+    // DevTools 设备模拟时 matchMedia change 不触发，用 resize 兜底
+    window.addEventListener('resize', check);
+    return () => {
+      mq.removeEventListener('change', mqHandler);
+      window.removeEventListener('resize', check);
+    };
+  }, []);
+
+  const mobileGroupsCollapsed = isMobile || !!settings.groupsInitiallyCollapsed;
+  // =================================================================
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -429,7 +454,7 @@ function Home({ initialSettings }) {
           </div>
         )}
         {layoutGroups.length > 0 && (
-          <div key="layoutGroups" id="layout-groups" className="flex flex-wrap m-4 sm:m-8 sm:mt-4 items-start mb-2">
+          <div key={`layoutGroups-${mobileResolved}-${isMobile}`} id="layout-groups" className="flex flex-wrap m-4 sm:m-8 sm:mt-4 items-start mb-2">
             {layoutGroups.map((group) =>
               group.services ? (
                 <ServicesGroup
@@ -439,7 +464,7 @@ function Home({ initialSettings }) {
                   maxGroupColumns={settings.fiveColumns ? 5 : settings.maxGroupColumns}
                   disableCollapse={settings.disableCollapse}
                   useEqualHeights={settings.useEqualHeights}
-                  groupsInitiallyCollapsed={settings.groupsInitiallyCollapsed}
+                  groupsInitiallyCollapsed={mobileGroupsCollapsed}
                 />
               ) : (
                 <BookmarksGroup
@@ -448,14 +473,14 @@ function Home({ initialSettings }) {
                   layout={settings.layout?.[group.name]}
                   disableCollapse={settings.disableCollapse}
                   maxGroupColumns={settings.maxBookmarkGroupColumns ?? settings.maxGroupColumns}
-                  groupsInitiallyCollapsed={settings.groupsInitiallyCollapsed}
+                  groupsInitiallyCollapsed={mobileGroupsCollapsed}
                 />
               ),
             )}
           </div>
         )}
         {serviceGroups?.length > 0 && (
-          <div key="services" id="services" className="flex flex-wrap m-4 sm:m-8 sm:mt-4 items-start mb-2">
+          <div key={`services-${mobileResolved}-${isMobile}`} id="services" className="flex flex-wrap m-4 sm:m-8 sm:mt-4 items-start mb-2">
             {serviceGroups.map((group) => (
               <ServicesGroup
                 key={group.name}
@@ -463,13 +488,13 @@ function Home({ initialSettings }) {
                 layout={settings.layout?.[group.name]}
                 maxGroupColumns={settings.fiveColumns ? 5 : settings.maxGroupColumns}
                 disableCollapse={settings.disableCollapse}
-                groupsInitiallyCollapsed={settings.groupsInitiallyCollapsed}
+                groupsInitiallyCollapsed={mobileGroupsCollapsed}
               />
             ))}
           </div>
         )}
         {bookmarkGroups?.length > 0 && (
-          <div key="bookmarks" id="bookmarks" className="flex flex-wrap m-4 sm:m-8 sm:mt-4 items-start mb-2">
+          <div key={`bookmarks-${mobileResolved}-${isMobile}`} id="bookmarks" className="flex flex-wrap m-4 sm:m-8 sm:mt-4 items-start mb-2">
             {bookmarkGroups.map((group) => (
               <BookmarksGroup
                 key={group.name}
@@ -477,7 +502,7 @@ function Home({ initialSettings }) {
                 layout={settings.layout?.[group.name]}
                 disableCollapse={settings.disableCollapse}
                 maxGroupColumns={settings.maxBookmarkGroupColumns ?? settings.maxGroupColumns}
-                groupsInitiallyCollapsed={settings.groupsInitiallyCollapsed}
+                groupsInitiallyCollapsed={mobileGroupsCollapsed}
                 bookmarksStyle={settings.bookmarksStyle}
               />
             ))}

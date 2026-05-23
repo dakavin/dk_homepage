@@ -286,6 +286,7 @@ export default function Document() {
     <Html>
       <Head>
         <meta name="mobile-web-app-capable" content="yes" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="manifest" href="/site.webmanifest?v=4" crossOrigin="use-credentials" />
         <link rel="preload" href="/api/config/custom.css" as="style" />

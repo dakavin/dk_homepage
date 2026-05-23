@@ -41,8 +41,10 @@ function InlineHitokoto() {
       onClick={fetchQuote}
       title="点击换一句 / Click for next"
     >
-      <span className="dk-ws-hitokoto-quote">{text}</span>
-      {from && <span className="dk-ws-hitokoto-from">— {from}</span>}
+      <span className="dk-ws-hitokoto-track">
+        <span className="dk-ws-hitokoto-quote">{text}</span>
+        {from && <span className="dk-ws-hitokoto-from">— {from}</span>}
+      </span>
     </button>
   );
 }

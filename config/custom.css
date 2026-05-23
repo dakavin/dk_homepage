@@ -181,6 +181,20 @@ html.dk-font-system body {
   text-shadow: 0 1px 4px rgb(255 255 255 / 0.6);
 }
 
+/* 状态圆点（dot 样式）：垂直居中对齐，覆盖 absolute top-0 偏上问题
+   item.jsx 里 .service-tags 是 absolute top-0 right-0，这里加 bottom:0 让它撑满全高，
+   align-items: center 则让内部圆点在高度方向居中 */
+.service-card .service-tags {
+  bottom: 0 !important;
+  align-items: center !important;
+}
+
+/* 减小 dot 模式的内边距（原 p-4 = 16px 四周，导致整体 44px 容器偏大偏上）*/
+.service-tags .ping-status,
+.service-tags .site-monitor-status {
+  padding: 4px 10px !important;
+}
+
 /* ---------- 4. 顶栏问候 / datetime 文字阴影 ---------- */
 
 #information-widgets [class*="text-"],
@@ -516,7 +530,10 @@ html.dk-font-system body {
 }
 
 @media screen and (max-width: 640px) {
-  /* 右侧栏: 横躺到底部正中 */
+
+  /* ================================================================
+   * A. 右侧栏 → 底部横排胶囊
+   * ================================================================ */
   #dk-side-rail,
   .dk-side-rail {
     top: auto !important;
@@ -531,7 +548,6 @@ html.dk-font-system body {
     padding: 8px 10px !important;
     border-radius: 999px !important;
     gap: 6px !important;
-    /* 不要太宽, 避免遮挡卡片 */
     max-width: calc(100vw - 24px);
     max-height: none;
     overflow: visible;
@@ -561,7 +577,6 @@ html.dk-font-system body {
     padding: 0;
   }
 
-  /* Color popover 在底部横排时改为向上弹出 */
   .dk-color-panel {
     top: auto;
     right: auto;
@@ -570,20 +585,311 @@ html.dk-font-system body {
     transform: translateX(-50%);
   }
 
-  /* Hitokoto: 保持在底部工具栏上方 */
   #dk-hitokoto {
     bottom: 64px;
   }
 
-  /* 时光进度条进一步紧凑 */
-  #dk-time-progress {
-    grid-template-columns: 1fr;
-    margin: 12px 12px 0;
-    font-size: 13px;
-  }
-
   #footer {
     padding-bottom: 88px;
+  }
+
+  /* ================================================================
+   * B. Widget Strip — 吸顶信息卡片（2 行布局）
+   *    第 1 行: Logo | 日期时间 | 城市 | 天气
+   *    第 2 行: 搜索框（占满全宽）
+   * ================================================================ */
+
+  /* 隐藏品牌名 "HOME"、竖向分隔线（每日一句保留） */
+  .dk-ws-cell-brand,
+  #dk-widget-strip .dk-ws-divider {
+    display: none !important;
+  }
+
+  .dk-ws-search-kbd {
+    display: none !important;
+  }
+
+  /* Widget strip 主体：四角圆角卡片（随页面滚动，不吸顶） */
+  #dk-widget-strip {
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 10px 14px !important;
+    margin: 6px 6px 0 !important;
+    border-radius: 14px !important;
+    border: 1px solid rgb(255 255 255 / 0.12) !important;
+    background: rgb(255 255 255 / 0.09) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.22) !important;
+  }
+
+  /* 搜索框：第 2 行，占满全宽 */
+  .dk-ws-search {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    gap: 6px !important;
+  }
+
+  /* 每日一言：第 3 行（flex order: 99 自动排在搜索后面）
+     overflow: hidden 配合 track 做 marquee 裁剪 */
+  .dk-ws-hitokoto {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    border-radius: 8px !important;
+    line-height: 1.4 !important;
+    overflow: hidden !important;
+  }
+
+  /* track：包裹引言+作者，作为整体横向滚动 */
+  .dk-ws-hitokoto-track {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    gap: 8px !important;
+    white-space: nowrap !important;
+    /* 暂停 → 左滑 → 消失 → 右侧滑入 → 暂停 → 循环 */
+    animation: dk-hitokoto-marquee 18s ease-in-out infinite !important;
+  }
+
+  /* 第 1 行各元素：字号适当放大 */
+  .dk-ws-logo {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .dk-ws-cell-stack {
+    gap: 2px !important;
+  }
+
+  .dk-ws-cell-stack .dk-ws-line {
+    font-size: 13px !important;
+  }
+
+  .dk-ws-cell-solo .dk-ws-main {
+    font-size: 15px !important;
+  }
+
+  /* ================================================================
+   * C. Tab 栏 — 吸顶，紧跟 widget strip 下方
+   *    widget strip ≈ 10px + 30px row1 + 8px + 36px search + 8px + 32px hitokoto + 10px = 134px
+   *    + 6px margin-top = 140px sticky top
+   * ================================================================ */
+  /* Tab 栏：随页面滚动，不吸顶 */
+  #tabs {
+    margin: 8px 6px 0 !important;
+    padding: 6px 10px !important;
+    background: rgb(255 255 255 / 0.07) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    border: 1px solid rgb(255 255 255 / 0.08) !important;
+    border-radius: 14px !important;
+  }
+
+  /* Tab 容器：横排可滚动，背景透明（由 #tabs 提供） */
+  #myTab {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    gap: 4px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+  }
+
+  /* 每个 Tab 均分父容器宽度 */
+  #myTab li {
+    flex: 1 !important;
+    min-width: 0 !important;
+    height: 34px !important;
+  }
+
+  /* Tab 按钮：胶囊形，填满 li，所有 Tab 均加粗 */
+  #myTab li button {
+    width: 100% !important;
+    padding: 0 8px !important;
+    height: 100% !important;
+    border-radius: 10px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    /* 非选中：稍暗，但保持可读 */
+    opacity: 0.55 !important;
+    color: inherit !important;
+  }
+
+  /* 选中 Tab：白色高亮背景 + 完全不透明 */
+  #myTab li button[aria-selected="true"] {
+    background: rgb(255 255 255 / 0.22) !important;
+    opacity: 1 !important;
+  }
+
+  /* ================================================================
+   * D. 分组 → 玻璃卡片（明显卡片感）
+   * ================================================================ */
+
+  /* 内容区容器：增大边距，让卡片和吸顶头部之间有呼吸空间 */
+  #layout-groups,
+  #services,
+  #bookmarks {
+    margin: 8px 8px 0 !important;
+  }
+
+  /* 分组卡片：提高背景/边框不透明度，确保在各色壁纸上都可见 */
+  .services-group:not(.subgroup),
+  .bookmarks-group:not(.subgroup) {
+    background: rgb(255 255 255 / 0.10) !important;
+    border: 1px solid rgb(255 255 255 / 0.16) !important;
+    border-radius: 14px !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    overflow: hidden !important;
+    margin-bottom: 8px !important;
+    padding: 2px 10px 6px !important;
+  }
+
+  /* 分组标题行：44px 点击热区 */
+  .services-group > div > button,
+  .bookmarks-group > div > button {
+    min-height: 44px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* 展开状态：标题底部加分隔线 */
+  .services-group button[aria-expanded="true"],
+  .bookmarks-group button[aria-expanded="true"] {
+    border-bottom: 1px solid rgb(255 255 255 / 0.10) !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* 分组名：正常字重，与 Tab 加粗形成层次对比 */
+  .service-group-name {
+    font-size: 0.93rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.1px !important;
+  }
+
+  /* 服务卡片内边距收紧 */
+  .service-card {
+    padding: 2px 4px !important;
+  }
+
+  .service-name {
+    padding: 5px 8px !important;
+  }
+
+  .service-name p.service-description {
+    font-size: 0.68rem !important;
+  }
+
+  /* ================================================================
+   * E. 状态圆点 — 移动端隐藏（卡片太小，圆点位置显得拥挤）
+   * ================================================================ */
+  .service-card .service-tags {
+    display: none !important;
+  }
+
+  /* ================================================================
+   * F. 数量徽章（桌面 hidden，移动端显示）
+   * ================================================================ */
+  .service-group-count {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 20px !important;
+    height: 18px !important;
+    padding: 0 6px !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    border-radius: 999px !important;
+    background: rgb(255 255 255 / 0.14) !important;
+    color: rgb(var(--color-200)) !important;
+  }
+
+  /* 折叠箭头：移动端常驻可见（桌面 hover 才显示） */
+  .services-group button .ml-auto svg,
+  .bookmarks-group button .ml-auto svg {
+    opacity: 1 !important;
+  }
+
+  /* ================================================================
+   * G. 时光进度条 — 移动端隐藏
+   * ================================================================ */
+  #dk-time-progress {
+    display: none !important;
+  }
+
+  /* ================================================================
+   * H. 浅色主题适配
+   * ================================================================ */
+  :root.scheme-light #dk-widget-strip {
+    background: rgb(255 255 255 / 0.72) !important;
+    border-bottom-color: rgb(0 0 0 / 0.08) !important;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.06) !important;
+  }
+
+  :root.scheme-light #tabs {
+    background: rgb(255 255 255 / 0.65) !important;
+    border-color: rgb(0 0 0 / 0.06) !important;
+  }
+
+  :root.scheme-light #myTab li button[aria-selected="true"] {
+    background: rgb(0 0 0 / 0.12) !important;
+  }
+
+  :root.scheme-light #myTab li button {
+    opacity: 0.5 !important;
+  }
+
+  :root.scheme-light #myTab li button[aria-selected="true"] {
+    background: rgb(0 0 0 / 0.12) !important;
+    opacity: 1 !important;
+  }
+
+  :root.scheme-light .dk-ws-hitokoto {
+    background: rgb(255 255 255 / 0.45) !important;
+    border-color: rgb(0 0 0 / 0.06) !important;
+  }
+
+  :root.scheme-light .service-group-count {
+    background: rgb(0 0 0 / 0.08) !important;
+    color: rgb(var(--color-700)) !important;
+  }
+
+  :root.scheme-light .services-group:not(.subgroup),
+  :root.scheme-light .bookmarks-group:not(.subgroup) {
+    background: rgb(255 255 255 / 0.60) !important;
+    border-color: rgb(0 0 0 / 0.08) !important;
+  }
+
+  :root.scheme-light .services-group button[aria-expanded="true"],
+  :root.scheme-light .bookmarks-group button[aria-expanded="true"] {
+    border-bottom-color: rgb(0 0 0 / 0.06) !important;
+  }
+
+  /* ================================================================
+   * I. 一言 marquee 动画
+   *    0-12%: 文字在起点可读（暂停）
+   *    12-72%: 向左滑出（离屏）
+   *    72→73%: 跳到右侧离屏位置（container overflow:hidden 遮挡，不可见）
+   *    73-90%: 从右侧滑入起点
+   *    90-100%: 起点暂停，循环
+   * ================================================================ */
+  @keyframes dk-hitokoto-marquee {
+    0%, 12%  { transform: translateX(0%); }
+    72%      { transform: translateX(-100%); }
+    73%      { transform: translateX(120%); }
+    90%, 100%{ transform: translateX(0%); }
   }
 }
 
@@ -774,6 +1080,11 @@ html.dk-font-system body {
   border-color: rgb(0 0 0 / 0.04);
   color: rgb(var(--color-900));
   text-shadow: none;
+}
+
+/* 桌面端：track 透明（子元素直接作为 flex item 参与布局） */
+.dk-ws-hitokoto-track {
+  display: contents;
 }
 
 .dk-ws-hitokoto-quote {

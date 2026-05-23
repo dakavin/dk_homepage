@@ -52,13 +52,23 @@ export default function ServicesGroup({
                 <h2 className="flex text-theme-800 dark:text-theme-300 text-xl font-medium service-group-name">
                   {tr(group.name)}
                 </h2>
-                <MdKeyboardArrowDown
-                  className={classNames(
-                    disableCollapse ? "hidden" : "",
-                    "transition-all opacity-0 group-hover:opacity-100 ml-auto text-theme-800 dark:text-theme-300 text-xl",
-                    open ? "" : "rotate-180",
+                <span className="ml-auto flex items-center gap-1.5 shrink-0">
+                  {group.services?.length > 0 && (
+                    <span
+                      className="service-group-count hidden text-xs rounded-full bg-white/10 text-theme-300 dark:text-theme-400 tabular-nums"
+                      aria-hidden="true"
+                    >
+                      {group.services.length}
+                    </span>
                   )}
-                />
+                  <MdKeyboardArrowDown
+                    className={classNames(
+                      disableCollapse ? "hidden" : "",
+                      "transition-all opacity-0 group-hover:opacity-100 text-theme-800 dark:text-theme-300 text-xl",
+                      open ? "" : "rotate-180",
+                    )}
+                  />
+                </span>
               </Disclosure.Button>
             )}
             <Transition
